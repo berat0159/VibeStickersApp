@@ -1,11 +1,16 @@
 package com.courage.vibestickers.repository
 
+import android.content.ContentValues
+import android.content.Context
 import android.graphics.BitmapFactory
+import android.provider.MediaStore
+import android.graphics.Bitmap
 import android.util.Log
-import coil3.Bitmap
 import com.courage.vibestickers.R
 import com.courage.vibestickers.data.model.StickersType
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -20,14 +25,14 @@ class StickerRepositoryImpl @Inject constructor(
                 .get()
                 .await()
                 .toObjects(StickersType::class.java)
-
             Log.d("FirestoreDebug", "Fetched Sticker Types: $result") // Gelen veriyi logla
             result
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             Log.e("FirestoreDebug", "Error fetching sticker types", e)
             emptyList()
         }
     }
+
 
     override suspend fun getStickerImage(filePath: String): Bitmap? {
         return try {

@@ -9,14 +9,21 @@ import com.courage.vibestickers.data.domain.LocalUserManager
 import com.courage.vibestickers.data.domain.LocalUserManagerImpl
 import com.courage.vibestickers.repository.CategoryDetailRepository
 import com.courage.vibestickers.repository.CategoryDetailStickerImpl
+import com.courage.vibestickers.repository.CreatedImpl
+import com.courage.vibestickers.repository.CreatedRepository
+import com.courage.vibestickers.repository.FavoriteStickersImpl
+import com.courage.vibestickers.repository.FavoriteStickersRepository
 import com.courage.vibestickers.repository.StickerRepositoryImpl
 import com.courage.vibestickers.repository.StickersRepository
 import com.courage.vibestickers.repository.StoryRepository
 import com.courage.vibestickers.repository.StoryRepositoryImpl
+import com.courage.vibestickers.repository.UserRepository
+import com.courage.vibestickers.repository.UserRepositoryImpl
 import com.courage.vibestickers.repository.usecases.app_entry.AppEntryUseCases
 import com.courage.vibestickers.repository.usecases.app_entry.ReadAppEntry
 import com.courage.vibestickers.repository.usecases.app_entry.SaveAppEntry
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.firestore
@@ -55,6 +62,27 @@ object AppModule {
         return context.dataStore
     }
 
+
+
+    @Provides
+    @Singleton
+    fun provideCreatedRepository(
+        firestore: FirebaseFirestore,
+        firebaseStorage: FirebaseStorage
+    ): CreatedRepository {
+        return CreatedImpl(firestore,firebaseStorage)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideFavoriteRepository(
+        firestore: FirebaseFirestore,
+        storage: FirebaseStorage
+    ): FavoriteStickersRepository {
+        return FavoriteStickersImpl(firestore, storage)
+    }
+
     @Provides
     @Singleton
     fun provideStickersRepository(
@@ -62,6 +90,14 @@ object AppModule {
         storage: FirebaseStorage
     ): StickersRepository {
         return StickerRepositoryImpl(firestore, storage)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        firestore: FirebaseFirestore
+    ): UserRepository {
+        return UserRepositoryImpl(firestore)
     }
 
     @Provides
@@ -98,6 +134,10 @@ object AppModule {
             maxDownloadRetryTimeMillis = 60000 // İsteğe bağlı: Timeout süresi
         }
     }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_entry")

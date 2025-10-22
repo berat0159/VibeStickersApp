@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.ads.mobile.sdk)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -72,12 +73,26 @@ dependencies {
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
 
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
+
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
+
+    // ... diğer bağımlılıklarınız ...
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3") // Örnek güncel sürüm, en sonuncusunu kontrol edin
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3") // Android için de bu genellikle eklenir
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3") // .await() iç
+
 
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
 
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-firestore")
+
+
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))

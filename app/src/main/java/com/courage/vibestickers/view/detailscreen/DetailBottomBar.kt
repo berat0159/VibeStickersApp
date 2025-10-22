@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -24,6 +25,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.SelectableChipElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,65 +37,76 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.courage.vibestickers.data.model.CategoryDetailStickers
 import com.courage.vibestickers.ui.theme.VibeStickersTheme
+import com.courage.vibestickers.viewmodel.CategoryDetailViewModel
+import com.courage.vibestickers.viewmodel.StickersTypeViewModel
 
 @Composable
-    fun DetailBottomBar(
-        navController: NavController,
-        onDownloadClick: () -> Unit,
-        onFavoriteClick: () -> Unit,
-    ){
+fun DetailBottomBar(
+    stickersTypeViewModel: StickersTypeViewModel,
+    onDownloadClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
+    categoryId: String
+) {
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .background(Color.Transparent)
+    ) {
+
+        val isFavorite by stickersTypeViewModel.favoriteTypes.collectAsState()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(70.dp)
+                .background(
+                    Color.White,
+                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                )
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
 
 
-        Box(
-            modifier = Modifier.fillMaxWidth().height(60.dp)
-                .background(Color.Transparent)
-        ){
-            Row(
+
+            IconButton(onClick = {
+                onFavoriteClick()
+            }) {
+                Icon(
+                    imageVector = if (isFavorite.contains(categoryId)) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = null,
+                    tint = if (isFavorite.contains(categoryId)) Color.Red else Color.Gray,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+            Button(
+                onClick = onDownloadClick,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .background(Color(0x94E1D4C9), shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                var isFavorite by remember { mutableStateOf(false) }
-
-                IconButton(onClick = {
-                    isFavorite = !isFavorite
-                    onFavoriteClick() // veya başka işlem
-                }) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (isFavorite) "Favoriden çıkar" else "Favorilere ekle",
-                        tint = if (isFavorite) Color.Red else Color.Gray
-                    )
-                }
-
-                Button(
-                    onClick = onDownloadClick,
-                    modifier = Modifier
-                        .height(45.dp)
-                        .width(250.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFEED595),       // Butonun arka planı
-                        contentColor = Color.White                // Yazı rengi
-                    )
-                ) {
-                    Text(text = "Download")
-                }
+                    .height(45.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFF3B16F),       // Butonun arka planı
+                    contentColor = Color.White                // Yazı rengi
+                )
+            ) {
+                Text(text = "Download",color = Color.White)
             }
         }
     }
+}
 
 
 @Preview(showBackground = true)
 @Composable
-fun BottomBarPreview(){
+fun BottomBarPreview() {
     VibeStickersTheme {
-        val navController= rememberNavController()
-        DetailBottomBar(navController = navController, onDownloadClick = {}, onFavoriteClick = {})
+        val navController = rememberNavController()
+        //DetailBottomBar(navController = navController, onDownloadClick = {}, onFavoriteClick = {})
     }
 }

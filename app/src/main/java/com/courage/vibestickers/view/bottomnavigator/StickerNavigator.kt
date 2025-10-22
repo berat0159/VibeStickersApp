@@ -1,9 +1,10 @@
 package com.courage.vibestickers.view.bottomnavigator
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Check
@@ -18,6 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -25,25 +29,36 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.courage.vibestickers.repository.StickerRepositoryImpl
+import com.courage.vibestickers.R
+import com.courage.vibestickers.view.createscreen.CreateScreenCom
 import com.courage.vibestickers.view.detailscreen.DetailScreen
 import com.courage.vibestickers.view.homescreen.HomeScreen
+import com.courage.vibestickers.view.mystickersscreen.CreatedDetailScreen
+import com.courage.vibestickers.view.mystickersscreen.OptionsBar
+import com.courage.vibestickers.view.profilescreen.ProfileItems
+import com.courage.vibestickers.view.profilescreen.ProfileScreen
+import com.courage.vibestickers.view.searchscreen.SearchTypeScreen
 import com.courage.vibestickers.viewmodel.StickersTypeViewModel
 
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
-fun StickerNavigator(
-) {
+fun StickerNavigator() {
+
     val navController = rememberNavController()
+
+
+    val stickersTypeViewModel: StickersTypeViewModel = hiltViewModel()
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-
-
+    val context = LocalContext.current
     val bottomNavigationItems = remember {
         listOf(
-            BottomNavigationIcon(icon = Icons.Filled.Home, label = "Home"),
-            BottomNavigationIcon(icon = Icons.Filled.Search, label = "Search"),
-            BottomNavigationIcon(icon = Icons.Filled.Favorite, label = "Favorite"),
-            BottomNavigationIcon(icon = Icons.Filled.AccountCircle, label = "Account"))
+            BottomNavigationIcon(icon = R.drawable.home, label = "Home"),
+            BottomNavigationIcon(icon = R.drawable.search, label = "Search"),
+            BottomNavigationIcon(icon = R.drawable.mystickers, label = "Favorite"),
+            BottomNavigationIcon(icon = R.drawable.user, label = "Account")
+        )
     }
 
     var selectedItem by rememberSaveable { mutableStateOf(0) }
@@ -61,7 +76,6 @@ fun StickerNavigator(
 
     val isBottomBarVisible = remember(key1 = navBackStackEntry) {
         navBackStackEntry?.destination?.route == Route.HomeScreen.route ||
-                navBackStackEntry?.destination?.route == Route.CreateScreen.route ||
                 navBackStackEntry?.destination?.route == Route.BookMarkScreen.route ||
                 navBackStackEntry?.destination?.route == Route.AccountScreen.route ||
                 navBackStackEntry?.destination?.route == Route.SearchScreen.route
@@ -99,19 +113,27 @@ fun StickerNavigator(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Route.HomeScreen.route) {
+
                 HomeScreen(navController = navController)
             }
             composable(Route.CreateScreen.route) {
-                Text(text = "Create Screen")
+                CreateScreenCom(navController = navController,
+                    onCropFinished = { croppedBitmap ->
+                        // kırpma işlemi bittikten sonra yapılacaklar
+                        // örn: kaydet, state’e ata veya başka ekrana gönder
+                        println("Crop işlemi tamamlandı -> $croppedBitmap")
+                    }
+                    , context = context
+                )
             }
             composable(Route.BookMarkScreen.route) {
-                Text(text = "Bookmark Screen")
+                OptionsBar(navController = navController, stickersTypeViewModel = stickersTypeViewModel)
             }
             composable(Route.AccountScreen.route) {
-                Text(text = "Account Screen")
+                ProfileScreen()
             }
             composable(Route.SearchScreen.route) {
-                Text(text = "Search Screen")
+                SearchTypeScreen(navController = navController)
             }
             // Detay ekran - parametreli
             composable(
@@ -119,7 +141,11 @@ fun StickerNavigator(
                 arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
-                DetailScreen(categoryId = categoryId, navController = navController)
+
+                DetailScreen(categoryId = categoryId, navController = navController, stickersTypeViewModel = stickersTypeViewModel)
+            }
+            composable(Route.CreatedDetailScreen.route) {
+                CreatedDetailScreen(navController = navController)
             }
 
         }

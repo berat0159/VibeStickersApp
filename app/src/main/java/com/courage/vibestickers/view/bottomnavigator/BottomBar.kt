@@ -1,6 +1,7 @@
 package com.courage.vibestickers.view.bottomnavigator
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -31,16 +33,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.courage.vibestickers.R
 
+
+fun Modifier.topBorder(strokeWidth: Dp, color: Color) = this.then(
+    Modifier.drawBehind {
+        val strokeWidthPx = strokeWidth.toPx()
+        drawLine(
+            color = color,
+            start = Offset(0f, 0f), // Sol üst
+            end = Offset(size.width, 0f), // Sağ üst
+            strokeWidth = strokeWidthPx
+        )
+    }
+)
 @Composable
 fun BottomBar(
     navController: NavHostController,
@@ -61,8 +80,8 @@ fun BottomBar(
         NavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(70.dp),
-            containerColor = Color(0x94F6DCC2),
+                .height(80.dp).topBorder(1.dp, color = Color.DarkGray),
+            containerColor = Color.White,
             contentColor = Color.White,
             tonalElevation = 25.dp
         ) {
@@ -74,15 +93,15 @@ fun BottomBar(
                     icon = {
                         Icon(
                             modifier = Modifier.size(30.dp),
-                            imageVector = icon.icon,
+                            painter = painterResource(id = icon.icon),
                             contentDescription = icon.label,
-                            tint = if (selected == index) colorScheme.background else colorScheme.onBackground
+                            tint = if (selected == index) Color(0xFF000000) else Color(0x56000000)
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = colorScheme.background,
-                        unselectedIconColor = colorScheme.onBackground,
-                        indicatorColor = colorScheme.onBackground
+                        selectedIconColor = Color(0xFF000000),
+                        unselectedIconColor = Color(0x56000000),
+                        indicatorColor = Color.Transparent
                     )
                 )
             }
@@ -103,15 +122,15 @@ fun BottomBar(
                     icon = {
                         Icon(
                             modifier = Modifier.size(30.dp),
-                            imageVector = icon.icon,
+                            painter = painterResource(id = icon.icon),
                             contentDescription = icon.label,
-                            tint = if (selected == index + 3) colorScheme.background else colorScheme.onBackground
+                            tint = if (selected == index + 3) Color(0xFF000000) else Color(0x56000000)
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = colorScheme.background,
-                        unselectedIconColor = colorScheme.onBackground,
-                        indicatorColor = colorScheme.onBackground
+                        selectedIconColor = colorScheme.primary,
+                        unselectedIconColor = colorScheme.onSurfaceVariant,
+                        indicatorColor = Color.Transparent
                     )
                 )
             }
@@ -123,7 +142,7 @@ fun BottomBar(
                 .align(Alignment.BottomCenter)
                 .offset(y = (-30).dp)
                 .size(60.dp),
-            backgroundColor = Color(0xFFF3B16F),
+            backgroundColor = Color(0xFFFF751F),
             elevation = FloatingActionButtonDefaults.elevation(8.dp)
         ) {
             Icon(
@@ -137,6 +156,20 @@ fun BottomBar(
 }
 
 data class BottomNavigationIcon(
-    val icon: ImageVector,
+    val icon: Int,
     val label: String
 )
+
+
+@Preview(showBackground = true)
+@Composable
+fun BottomBarPreview(){
+    val navController = rememberNavController()
+    val iconList = listOf(
+        BottomNavigationIcon(R.drawable.home,"home"),
+        BottomNavigationIcon(R.drawable.search, "Search"),
+        BottomNavigationIcon(R.drawable.mystickers, "Favorites"),
+        BottomNavigationIcon(R.drawable.user, "Account")
+    )
+    BottomBar(navController = navController, selected = 0, onClick = {}, icons = iconList)
+}

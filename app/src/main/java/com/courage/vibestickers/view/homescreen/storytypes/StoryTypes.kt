@@ -31,23 +31,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.courage.vibestickers.data.model.StickersType
 import com.courage.vibestickers.data.model.StoryTypesData
 import com.courage.vibestickers.repository.StoryRepositoryImpl
 import com.courage.vibestickers.viewmodel.StoryTypeViewModel
 
 
 @Composable
-fun StoryTypes(viewModel: StoryTypeViewModel) {
+fun StoryTypes(viewModel: StoryTypeViewModel,navController: NavController) {
 
     val storyTypes by viewModel.storyType.collectAsState()
 
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(top = 45.dp, start = 10.dp),
+        contentPadding = PaddingValues(top = 20.dp, start = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(storyTypes){ storyTypesData ->
-            StoryItems(storyTypesData = storyTypesData, viewModel = viewModel)
+            StoryItems(storyTypesData = storyTypesData, viewModel = viewModel,  navController = navController)
         }
     }
 
@@ -55,7 +57,7 @@ fun StoryTypes(viewModel: StoryTypeViewModel) {
 
 
 @Composable
-fun StoryItems(storyTypesData: StoryTypesData,viewModel: StoryTypeViewModel) {
+fun StoryItems( storyTypesData: StoryTypesData, viewModel: StoryTypeViewModel,navController: NavController) {
 
     val storyImages by viewModel.storyImage.collectAsState()
 
@@ -68,7 +70,10 @@ fun StoryItems(storyTypesData: StoryTypesData,viewModel: StoryTypeViewModel) {
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = CircleShape
+            shape = CircleShape,
+            onClick = {
+                navController.navigate("detail_screen/${storyTypesData.storyId}")
+            }
         ) {
             if (bitmap != null) {
                 Image(
@@ -100,5 +105,5 @@ fun StoryItems(storyTypesData: StoryTypesData,viewModel: StoryTypeViewModel) {
 @Composable
 fun PreviewStoryTypes() {
     val viewModel : StoryTypeViewModel = hiltViewModel()
-    StoryTypes(viewModel = viewModel)
+    //StoryTypes(viewModel = viewModel)
 }

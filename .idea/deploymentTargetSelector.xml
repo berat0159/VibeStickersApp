@@ -4,16 +4,19 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-03-17T19:24:58.621025Z">
+        <DropdownSelection timestamp="2025-07-24T06:33:19.311986400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\berat\.android\avd\Pixel_6_Pro_API_34_1.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Berat\.android\avd\Pixel_7_Pro.avd" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="Preview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="SearchScreenPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

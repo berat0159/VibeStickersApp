@@ -1,8 +1,9 @@
 package com.courage.vibestickers.view.detailscreen
 
-import android.telecom.Call.Details
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,38 +27,55 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.courage.vibestickers.data.model.CategoryDetailStickers
+import com.courage.vibestickers.repository.FakeRepository
 import com.courage.vibestickers.viewmodel.CategoryDetailViewModel
 
 
 @Composable
-fun DetailsLazy(categoryDetailViewModel: CategoryDetailViewModel) {
+fun DetailsLazy(
+    categoryDetailViewModel: CategoryDetailViewModel,
+    onStickerClick: (CategoryDetailStickers) -> Unit
+) {
 
     val categoryDetailStickers = categoryDetailViewModel.categoryDetailStickers.collectAsState()
 
-    val categoryTitle = categoryDetailViewModel.categoryDetailStickers.value.firstOrNull()?.categoryTittle ?: ""
+    val categoryTitle =
+        categoryDetailViewModel.categoryDetailStickers.value.firstOrNull()?.categoryTittle ?: ""
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 10.dp)
-    ){
+    ) {
         Text(
             text = categoryTitle,
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(start = 16.dp),
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
         )
-
+        Text(
+            "${categoryDetailStickers.value.size} Stickerlar",
+            color = Color.LightGray,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(start = 16.dp)
+        )
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(15.dp)
+            contentPadding = PaddingValues(15.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(categoryDetailStickers.value) { categoryDetailStickers ->
                 DetailItems(
                     categoryDetailViewModel = categoryDetailViewModel,
-                    categoryDetailStickers = categoryDetailStickers
+                    categoryDetailStickers = categoryDetailStickers,
+                    onStickerClick = onStickerClick
                 )
             }
         }
@@ -69,24 +87,26 @@ fun DetailsLazy(categoryDetailViewModel: CategoryDetailViewModel) {
 @Composable
 fun DetailItems(
     categoryDetailViewModel: CategoryDetailViewModel,
-    categoryDetailStickers: CategoryDetailStickers
+    categoryDetailStickers: CategoryDetailStickers,
+    onStickerClick: (CategoryDetailStickers) -> Unit
 ) {
 
     val categoryImage by categoryDetailViewModel.categoryDetailImage.collectAsState()
 
-    val bitmap = categoryImage[categoryDetailStickers.stickerImageUrl]
+    val bitmap = categoryImage[categoryDetailStickers.categoryImageUrl]
 
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .height(100.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .height(100.dp)
+            .clickable { onStickerClick(categoryDetailStickers) },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
 
-    ) {
+        ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
-        ){
+        ) {
             if (bitmap != null) {
                 Image(
                     bitmap = bitmap.asImageBitmap(),
@@ -105,6 +125,15 @@ fun DetailItems(
             }
         }
 
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun DetailItemPreview() {
+    val fakeViewModel = CategoryDetailViewModel(FakeRepository())
+    DetailsLazy(categoryDetailViewModel = fakeViewModel) {
 
     }
 }

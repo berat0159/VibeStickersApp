@@ -1,5 +1,7 @@
 package com.courage.vibestickers.view.bottomnavigator
 
+import kotlinx.serialization.Serializable
+
 sealed class Route(
     val route:String
 ) {
@@ -12,4 +14,6 @@ sealed class Route(
     object AppStartNavigation : Route(route = "app_start_navigation")
     object StickerNavigation : Route(route = "sticker_navigation")
     object DetailScreen : Route(route = "detail_screen")
+
+    object CreatedDetailScreen : Route(route = "created_detail_screen")
 }

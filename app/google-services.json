@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "343708995375",
-    "project_id": "vibestickers-95800",
-    "storage_bucket": "vibestickers-95800.firebasestorage.app"
+    "project_number": "348852205522",
+    "project_id": "vibestickers-fc10d",
+    "storage_bucket": "vibestickers-fc10d.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:343708995375:android:2225829c39cc9eea8d9bda",
+        "mobilesdk_app_id": "1:348852205522:android:c0db7e3f43209fa23d3a0b",
         "android_client_info": {
           "package_name": "com.courage.vibestickers"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBAeMJ8vBFYjZOdTG370x_qEDKlhcyQ-5g"
+          "current_key": "AIzaSyC3fYonf0-mCYS_J4T0YQqiqA3rq6rI2MA"
         }
       ],
       "services": {

@@ -2,7 +2,7 @@
 <resources>
     <style name="App.Starting.Theme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#000</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splashicon</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/vibeicon</item>
         <item name="postSplashScreenTheme">@style/Theme.VibeStickers</item>
     </style>
 </resources>
